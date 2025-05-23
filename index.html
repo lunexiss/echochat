@@ -156,6 +156,43 @@
   max-width: 80vw;
 }
 
+#connectOverlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  backdrop-filter: blur(8px);
+  background-color: rgba(14, 14, 14, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+#connectOverlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#connectOverlay.hide {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#connectMessage {
+  color: #f2f2f2;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+  padding: 2rem;
+  background: rgba(30, 30, 30, 0.85);
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+  max-width: 80vw;
+}
+
   </style>
 </head>
 <body>
@@ -185,12 +222,18 @@
     </div>
   </div>
 
+  <div id="connectOverlay">
+    <div id="connectMessage">
+      Waiting for connection...<br />
+    </div>
+  </div>
+
   <audio id="pingSound" src="https://assets.mixkit.co/active_storage/sfx/2354/2354.mp3" preload="auto"></audio>
   <audio id="disconnectSound" src="https://sounddino.com/index.php?r=load&mp3&id=44454&l=2" preload="auto"></audio>
 
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   <script>
-    const socket = io();
+    const socket = io('https://echo-5jsf.onrender.com');
     const form = document.getElementById('form');
     const input = document.getElementById('input');
     const messages = document.getElementById('messages');
@@ -209,6 +252,8 @@ input.addEventListener('input', () => {
 const chat = document.getElementById('chat');
 const waitOverlay = document.getElementById('waitOverlay');
 const disconnectOverlay = document.getElementById('disconnectOverlay');
+const connectOverlay = document.getElementById('connectOverlay');
+connectOverlay.classList.add('show');
 
 const typingIndicator = document.createElement('div');
 typingIndicator.textContent = 'Stranger is typing...';
@@ -248,6 +293,7 @@ socket.on('partner_stop_typing', () => {
 
     socket.on('connect', () => {
       socket.emit('find_partner');
+      connectOverlay.classList.add('hide');
       waitOverlay.classList.add('show');
     });
 
