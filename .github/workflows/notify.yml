@@ -9,10 +9,10 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
-      - name: Notify Discord
+      - name: Discord Notification
         uses: Ilshidur/action-discord@master
         with:
           webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
           message: |
-            🚀 **New push to `main` by ${{ github.actor }}**
-            - See the changes: https://github.com/${{ github.repository }}/commits/${{ github.sha }}
+            New commit by ${{ github.actor }} on `${{ github.repository }}`
+            https://github.com/${{ github.repository }}/commit/${{ github.sha }}
