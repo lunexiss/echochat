@@ -75,7 +75,7 @@
       font-family: 'JetBrains Mono', monospace;
     }
 
-    #send {
+    button {
       background-color: #272727;
       color: white;
       border: none;
@@ -87,9 +87,14 @@
       transition: background-color 0.3s ease;
     }
 
-    #send:hover {
+    button:hover {
       background-color: #313131;
     }
+
+    hr {
+      opacity: 0;
+    }
+
     #disconnectOverlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -236,8 +241,8 @@
 
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   <script>
-    // yo gurt
-    const socket = io('https://echo-5jsf.onrender.com');
+    //const socket = io('https://echo-5jsf.onrender.com');
+    const socket = io('http://192.168.1.104:5000'); // for testing
     const form = document.getElementById('form');
     const input = document.getElementById('input');
     const messages = document.getElementById('messages');
@@ -318,10 +323,65 @@ socket.on('partner_stop_typing', () => {
     form.addEventListener('submit', function(e) {
       e.preventDefault();
       if (input.value) {
-        socket.emit('send_message', input.value);
-        addMessage(`<b>You:</b> ${input.value}`);
+        const msg = input.value;
+
+        // commands :3
+        if (msg.startsWith('https://garticphone.com/')) {
+          socket.emit('start_game', "Gartic Phone", msg);
+          addMessage(`<i>You requested to play <b>Gartic Phone</b></i>`);
+        } else {
+          socket.emit('send_message', msg);
+          addMessage(`<b>You:</b> ${msg}`);
+        }
+
         input.value = '';
       }
+    });
+
+    // invitation and shi
+
+    socket.on('game_invite', function(data) {
+      const game = data.game;
+      const link = data.link;
+
+      const li = document.createElement('li');
+      
+      const html = `
+        <hr>
+        <b>Stranger invited you to play <i>${game}</i>.</b><br />
+        <hr>
+        <button class="accept-btn">Accept</button>
+        <button class="decline-btn">Decline</button>
+        <hr>
+      `;
+      li.innerHTML = html;
+
+      const acceptBtn = li.querySelector('.accept-btn');
+      const declineBtn = li.querySelector('.decline-btn');
+
+      acceptBtn.addEventListener('click', () => acceptGame(game, link));
+      declineBtn.addEventListener('click', () => declineGame(game));
+
+      messages.appendChild(li);
+      messages.scrollTop = messages.scrollHeight;
+      // ts almost made my life intense...
+    });
+
+    function acceptGame(game, link) {
+      socket.emit('game_response', { accepted: true, game });
+      window.open(link); // redirect to the invitation link
+    }
+
+    function declineGame(game) {
+      socket.emit('game_response', { accepted: false, game });
+    }
+
+    socket.on('game_start', function(game) {
+      addMessage(`<b>Game started: ${game}</b>`);
+    });
+
+    socket.on('game_declined', function(game) {
+      addMessage(`<i>Stranger declined to play <b>${game}</b>.</i>`);
     });
 
     socket.on('receive_message', function(msg) {
