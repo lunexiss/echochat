@@ -327,23 +327,29 @@ socket.on('partner_stop_typing', () => {
     });
 
 socket.on('partner_left', () => {
-  addMessage(`<em>Your partner disconnected. Refresh to find a new one.</em>`);
-  notifyUser('Partner left', 'Your chat partner has disconnected.');
+  disconnectOverlay.classList.add('show');
+waitOverlay.classList.remove('show');
+waitOverlay.classList.add('hide');
 
-  showOverlay(disconnectOverlay);
-  hideOverlay(waitOverlay);
+// frick android
+waitOverlay.style.display = 'none';
+setTimeout(() => waitOverlay.style.display = '', 10);
 
-  disconnectSound.play();
+disconnectSound.play();
+
 });
 
 socket.on('partner_found', () => {
-  addMessage(`<em>Connected to a random stranger.</em>`);
-  notifyUser('Connected', 'You are now chatting with a stranger.');
+  disconnectOverlay.classList.remove('show');
+waitOverlay.classList.remove('show');
+waitOverlay.classList.add('hide');
 
-  hideOverlay(disconnectOverlay);
-  hideOverlay(waitOverlay);
+// ugh i hate android
+waitOverlay.style.display = 'none';
+setTimeout(() => waitOverlay.style.display = '', 10);
 
-  pingSound.play();
+pingSound.play();
+
 });
 
   </script>
