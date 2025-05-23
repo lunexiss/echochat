@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
   <style>
+    /* reset ts stupid boring stuff */
     * {
       box-sizing: border-box;
     }
@@ -14,20 +15,44 @@
     body {
       margin: 0;
       font-family: 'JetBrains Mono', monospace;
-      background-color: #0e0e0e;
+      background: linear-gradient(135deg, #0e0e0e 0%, #121212 100%);
       color: #f2f2f2;
       display: flex;
       flex-direction: column;
       min-height: 100vh;
+      /* because dark mode is **life** */
+      background-attachment: fixed;
     }
 
     header {
       background-color: #1a1a1a;
       padding: 1.5rem;
       text-align: center;
+      font-weight: 700;
       font-size: 2rem;
-      font-weight: 600;
-      border-bottom: 1px solid #333;
+      position: relative;
+      letter-spacing: 2px;
+      text-shadow: 0 0 8px #4caf50aa;
+      user-select: none;
+    }
+
+    #onlineCount {
+      position: absolute;
+      right: 1.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: #4caf50;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    #onlineCount.animated {
+      transform: translateY(-50%) scale(1.15);
+      opacity: 0.9;
     }
 
     main {
@@ -36,48 +61,100 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 2rem;
+      padding: 3rem 2rem;
       text-align: center;
+      max-width: 700px;
+      margin: 0 auto;
     }
 
     h1 {
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
+      font-size: 3rem;
+      margin-bottom: 0.3rem;
+      color: #4caf50;
+      text-shadow: 0 0 12px #4caf50cc;
+      animation: pulse 3s infinite;
     }
 
     p {
-      font-size: 1.1rem;
-      color: #cccccc;
+      font-size: 1.2rem;
+      color: #aaa;
       max-width: 600px;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+      font-style: italic;
     }
 
     .btn {
       background-color: #272727;
       color: white;
-      padding: 0.75rem 1.5rem;
+      padding: 0.85rem 2rem;
       border: none;
-      border-radius: 6px;
-      font-size: 1rem;
+      border-radius: 12px;
+      font-size: 1.1rem;
       cursor: pointer;
-      margin-top: 2rem;
+      margin: 0.7rem 0.5rem;
       font-family: 'JetBrains Mono', monospace;
-      transition: background-color 0.3s ease;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 0 8px transparent;
       text-decoration: none;
+      display: inline-block;
+      user-select: none;
     }
 
     .btn:hover {
-      background-color: #313131;
+      background-color: #4caf50;
+      box-shadow: 0 0 15px #4caf50;
+      color: #0e0e0e;
     }
 
     footer {
       padding: 1rem;
       text-align: center;
-      font-size: 0.875rem;
-      color: #666;
+      font-size: 0.85rem;
+      color: #555;
       border-top: 1px solid #333;
-      background-color: #1a1a1a;
+      background-color: #121212;
+      font-style: italic;
+      user-select: none;
     }
+
+    @keyframes pulse {
+      0%, 100% {
+        text-shadow: 0 0 12px #4caf50cc;
+      }
+      50% {
+        text-shadow: 0 0 24px #80e27e;
+      }
+    }
+
+    /* because you asked for silly */
+    .fun-fact {
+      margin-top: 3rem;
+      color: #6ab04c;
+      font-weight: 600;
+      font-size: 1rem;
+      font-style: normal;
+      animation: bounceIn 1s ease forwards;
+    }
+
+    @keyframes bounceIn {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
   </style>
+
+  <!-- yo -->
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script>
+    // gurt
+  </script>
 </head>
 <body>
   <header>
@@ -87,10 +164,15 @@
   <main>
     <h1>Welcome to Echo</h1>
     <p>
-      Talk to strangers in real-time. No logins, no tracking. Just pure, anonymous conversation. Inspired by <b>Human Or Not</b> game.
+      Talk to strangers in real-time. No logins, no email spams<br />
+      Just pure, anonymous conversation. Inspired by <b>Human Or Not</b> game<br />
     </p>
-    <a href="chat.html" class="btn">Start Chatting</a>
-    <a href="https://discord.gg/AQXDRDb75q" class="btn">Join our Discord Server</a>
+    <a href="chat.html" class="btn" title="Your next addiction">Start Chatting</a>
+    <a href="https://discord.gg/AQXDRDb75q" class="btn" target="_blank" rel="noopener" title="Where cool cats hang out">Join our Discord Server</a>
+
+    <div class="fun-fact" aria-live="polite">
+        Cool fact: I don't know.
+    </div>
   </main>
 </body>
 </html>
