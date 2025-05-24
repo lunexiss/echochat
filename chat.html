@@ -25,7 +25,6 @@
       font-size: 2rem;
       position: relative;
       letter-spacing: 2px;
-      text-shadow: 0 0 8px #4caf50aa;
       user-select: none;
     }
 
@@ -201,12 +200,60 @@
   max-width: 80vw;
 }
 
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.nav-container.centered-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.logo {
+  font-size: 2.4rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  user-select: none;
+}
+
+
+nav {
+  display: flex;
+  gap: 1rem;
+}
+
+nav a {
+  text-decoration: none;
+  color: #797979;
+  font-weight: 600;
+  transition: transform .2s;
+  font-size: 1rem;
+  transform: scale(0.9);
+}
+
+nav a:hover {
+  transform: scale(1.0);
+}
+
   </style>
 </head>
 <body>
   <header>
-    Echo
-  </header>
+  <div class="nav-container">
+    <div class="logo">Echo</div>
+    <nav>
+      <a href="index.html">home</a>
+      <a href="settings.html">settings</a>
+      <a href="chat.html">chat</a>
+    </nav>
+  </div>
+</header>
 
   <div id="chat">
     <ul id="messages"></ul>
@@ -386,7 +433,9 @@ socket.on('partner_stop_typing', () => {
 
     socket.on('receive_message', function(msg) {
       addMessage(`<b>Stranger:</b> ${msg}`);
-      pingSound.play();
+      if (localStorage.getItem('echo_notifs') === 'true') {
+        pingSound.play();
+      }
       notifyUser('New message from stranger', msg);
     });
 
@@ -399,8 +448,9 @@ waitOverlay.classList.add('hide');
 waitOverlay.style.display = 'none';
 setTimeout(() => waitOverlay.style.display = '', 10);
 
-disconnectSound.play();
-
+if (localStorage.getItem('echo_notifs') === 'true') {
+  disconnectSound.play();
+}
 });
 
 socket.on('partner_found', () => {
@@ -412,7 +462,9 @@ waitOverlay.classList.add('hide');
 waitOverlay.style.display = 'none';
 setTimeout(() => waitOverlay.style.display = '', 10);
 
-pingSound.play();
+if (localStorage.getItem('echo_notifs') === 'true') {
+  pingSound.play();
+}
 
 });
 
